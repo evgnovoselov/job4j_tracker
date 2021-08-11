@@ -3,8 +3,8 @@ package ru.job4j.tracker.store;
 import ru.job4j.tracker.model.Item;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,6 +25,17 @@ public class SqlTracker implements Store {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+        try (Statement statement = cn.createStatement()) {
+            statement.execute(String.format(
+                    "create table if not exists %s (%s, %s, %s)",
+                    "items",
+                    "id serial primary key",
+                    "name text",
+                    "created timestamp"
+            ));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -36,22 +47,68 @@ public class SqlTracker implements Store {
 
     @Override
     public Item add(Item item) {
-        return null;
+        try (PreparedStatement statement =
+                     cn.prepareStatement("insert into items(name, created) values (?, ?)",
+                             Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, item.getName());
+            statement.setTimestamp(2, Timestamp.valueOf(item.getCreated()));
+            statement.execute();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    item.setId(generatedKeys.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 
     @Override
     public boolean replace(int id, Item item) {
-        return false;
+        boolean result = false;
+        try (PreparedStatement statement =
+                     cn.prepareStatement("update items set name = ?, created = ? where id = ?")) {
+            statement.setString(1, item.getName());
+            statement.setTimestamp(2, Timestamp.valueOf(item.getCreated()));
+            statement.setInt(3, id);
+            result = statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public boolean delete(int id) {
-        return false;
+        boolean result = false;
+        try (PreparedStatement statement =
+                     cn.prepareStatement("delete from items where id = ?")) {
+            statement.setInt(1, id);
+            result = statement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public List<Item> findAll() {
-        return null;
+        List<Item> items = new ArrayList<>();
+        try (PreparedStatement statement = cn.prepareStatement("select * from items")) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    items.add(new Item(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"),
+                            resultSet.getTimestamp("created").toLocalDateTime()
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
     @Override
