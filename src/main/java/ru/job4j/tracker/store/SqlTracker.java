@@ -113,7 +113,22 @@ public class SqlTracker implements Store {
 
     @Override
     public List<Item> findByName(String key) {
-        return null;
+        List<Item> items = new ArrayList<>();
+        try (PreparedStatement statement = cn.prepareStatement("select * from items where name like ?")) {
+            statement.setString(1, String.format("%%%s%%", key));
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    items.add(new Item(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"),
+                            resultSet.getTimestamp("created").toLocalDateTime()
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return items;
     }
 
     @Override
