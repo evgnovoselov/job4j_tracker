@@ -70,7 +70,7 @@ public class SqlTrackerTest {
     }
 
     @Test
-    public void whenFindByNameThenGetItem() {
+    public void whenFindByNameThenGetItemsTheSameName() {
         SqlTracker tracker = new SqlTracker(connection);
         List<Item> items = List.of(
                 new Item("First"),
