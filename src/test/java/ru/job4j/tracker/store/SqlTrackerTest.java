@@ -68,4 +68,17 @@ public class SqlTrackerTest {
         items.forEach(tracker::add);
         assertThat(tracker.findAll(), is(items));
     }
+
+    @Test
+    public void whenFindByNameThenGetItem() {
+        SqlTracker tracker = new SqlTracker(connection);
+        List<Item> items = List.of(
+                new Item("First"),
+                new Item("Second"),
+                new Item("First")
+        );
+        items.forEach(tracker::add);
+        List<Item> expected = List.of(items.get(0), items.get(2));
+        assertThat(tracker.findByName("First"), is(expected));
+    }
 }
