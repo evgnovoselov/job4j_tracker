@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 
 public class SqlTrackerTest {
@@ -92,5 +93,17 @@ public class SqlTrackerTest {
         );
         items.forEach(tracker::add);
         assertThat(tracker.findById(items.get(1).getId()), is(items.get(1)));
+    }
+
+    @Test
+    public void whenFindByIdNotFoundThenGetNull() {
+        SqlTracker tracker = new SqlTracker(connection);
+        List<Item> items = List.of(
+                new Item("First"),
+                new Item("Second"),
+                new Item("First")
+        );
+        items.forEach(tracker::add);
+        assertThat(tracker.findById(0), is(nullValue()));
     }
 }
