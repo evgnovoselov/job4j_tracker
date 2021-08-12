@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.is;
@@ -55,5 +56,16 @@ public class SqlTrackerTest {
         Item item = new Item("item");
         tracker.add(item);
         assertThat(tracker.findById(item.getId()), is(item));
+    }
+
+    @Test
+    public void whenFindAllThenGetAll() {
+        SqlTracker tracker = new SqlTracker(connection);
+        List<Item> items = List.of(
+                new Item("First"),
+                new Item("Second")
+        );
+        items.forEach(tracker::add);
+        assertThat(tracker.findAll(), is(items));
     }
 }
