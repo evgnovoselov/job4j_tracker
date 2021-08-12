@@ -11,6 +11,13 @@ import java.util.Properties;
 public class SqlTracker implements Store {
     private Connection cn;
 
+    public SqlTracker() {
+    }
+
+    public SqlTracker(Connection cn) {
+        this.cn = cn;
+    }
+
     @Override
     public void init() {
         try (InputStream in = SqlTracker.class.getClassLoader().getResourceAsStream("app.properties")) {
@@ -24,17 +31,6 @@ public class SqlTracker implements Store {
             );
         } catch (Exception e) {
             throw new IllegalStateException(e);
-        }
-        try (Statement statement = cn.createStatement()) {
-            statement.execute(String.format(
-                    "create table if not exists %s (%s, %s, %s)",
-                    "items",
-                    "id serial primary key",
-                    "name text",
-                    "created timestamp"
-            ));
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
