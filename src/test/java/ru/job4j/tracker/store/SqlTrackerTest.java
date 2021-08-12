@@ -115,4 +115,13 @@ public class SqlTrackerTest {
         tracker.replace(item.getId(), new Item("Second"));
         assertThat(tracker.findById(item.getId()).getName(), is("Second"));
     }
+
+    @Test
+    public void whenDeleteItemThenGetNullFromId() {
+        SqlTracker tracker = new SqlTracker(connection);
+        Item item = new Item("First");
+        tracker.add(item);
+        tracker.delete(item.getId());
+        assertThat(tracker.findById(item.getId()), is(nullValue()));
+    }
 }
