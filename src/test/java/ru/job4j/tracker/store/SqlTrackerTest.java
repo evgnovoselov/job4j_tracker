@@ -106,4 +106,13 @@ public class SqlTrackerTest {
         items.forEach(tracker::add);
         assertThat(tracker.findById(0), is(nullValue()));
     }
+
+    @Test
+    public void whenReplaceItemThenItemHaveNewName() {
+        SqlTracker tracker = new SqlTracker(connection);
+        Item item = new Item("First");
+        tracker.add(item);
+        tracker.replace(item.getId(), new Item("Second"));
+        assertThat(tracker.findById(item.getId()).getName(), is("Second"));
+    }
 }
