@@ -18,7 +18,7 @@ public class FindByNameAction implements UserAction {
 
     @Override
     public String name() {
-        return "=== Find items by name ====";
+        return "=== Find items by name ===";
     }
 
     @Override

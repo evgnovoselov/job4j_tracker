@@ -18,12 +18,13 @@ public class FindAllAction implements UserAction {
 
     @Override
     public String name() {
-        return "=== Show all items ====";
+        return "=== Show all items ===";
     }
 
     @Override
     public boolean execute(Input input, Store tracker) {
         List<Item> items = tracker.findAll();
+        out.println(name());
         for (Item item : items) {
             out.println(item);
         }
