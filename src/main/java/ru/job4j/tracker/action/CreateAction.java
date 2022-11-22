@@ -16,7 +16,7 @@ public class CreateAction implements UserAction {
 
     @Override
     public String name() {
-        return "=== Create a new Item ====";
+        return "=== Create a new Item ===";
     }
 
     @Override
@@ -24,6 +24,7 @@ public class CreateAction implements UserAction {
         String name = input.askStr("Enter name: ");
         Item item = new Item(name);
         tracker.add(item);
+        out.println(name());
         out.println("Item successfully added!");
         return true;
     }

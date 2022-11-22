@@ -19,7 +19,7 @@ public class MemTracker implements Store {
 
     @Override
     public Item add(Item item) {
-        item.setId(id++);
+        item.setId(++id);
         items.add(item);
         return item;
     }

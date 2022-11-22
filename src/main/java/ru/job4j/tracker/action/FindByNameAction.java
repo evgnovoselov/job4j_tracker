@@ -18,14 +18,15 @@ public class FindByNameAction implements UserAction {
 
     @Override
     public String name() {
-        return "=== Find items by name ====";
+        return "=== Find items by name ===";
     }
 
     @Override
     public boolean execute(Input input, Store tracker) {
         String name = input.askStr("Enter name: ");
         List<Item> items = tracker.findByName(name);
-        for (Item item: items) {
+        out.println(name());
+        for (Item item : items) {
             out.println(item);
         }
         return true;
