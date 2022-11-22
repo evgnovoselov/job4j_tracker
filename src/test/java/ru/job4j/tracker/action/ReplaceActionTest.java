@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 
 public class ReplaceActionTest {
     @Test
-    public void whenReplace() {
+    public void whenReplaceItemThenReplaced() {
         Output output = new StubOutput();
         Store tracker = new MemTracker();
         tracker.add(new Item("Replaced item"));
@@ -26,5 +26,18 @@ public class ReplaceActionTest {
         String ln = System.lineSeparator();
         assertEquals("=== Edit item ===" + ln + "Item is successfully replaced!" + ln, output.toString());
         assertEquals(replacedName, tracker.findAll().get(0).getName());
+    }
+
+    @Test
+    public void whenNotHaveItemReplaceThenTextWrong() {
+        Output output = new StubOutput();
+        Store tracker = new MemTracker();
+        ReplaceAction rep = new ReplaceAction(output);
+        Input input = mock(Input.class);
+        when(input.askInt(any(String.class))).thenReturn(1);
+        when(input.askStr(any(String.class))).thenReturn("Text");
+        rep.execute(input, tracker);
+        String ln = System.lineSeparator();
+        assertEquals("=== Edit item ===" + ln + "Wrong id!" + ln, output.toString());
     }
 }
