@@ -34,10 +34,8 @@ public class ReplaceActionTest {
         Store tracker = new MemTracker();
         ReplaceAction rep = new ReplaceAction(output);
         Input input = mock(Input.class);
-        when(input.askInt(any(String.class))).thenReturn(1);
-        when(input.askStr(any(String.class))).thenReturn("Text");
         rep.execute(input, tracker);
         String ln = System.lineSeparator();
-        assertEquals("=== Edit item ===" + ln + "Wrong id!" + ln, output.toString());
+        assertEquals("=== Edit item ===" + ln + "Item with id=0 not found." + ln, output.toString());
     }
 }

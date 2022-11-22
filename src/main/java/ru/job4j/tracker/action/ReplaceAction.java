@@ -27,7 +27,7 @@ public class ReplaceAction implements UserAction {
         if (tracker.replace(id, new Item(name))) {
             out.println("Item is successfully replaced!");
         } else {
-            out.println("Wrong id!");
+            out.println(String.format("Item with id=%s not found.", id));
         }
         return true;
     }
