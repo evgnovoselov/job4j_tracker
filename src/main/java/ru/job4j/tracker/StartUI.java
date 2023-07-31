@@ -13,7 +13,6 @@ import ru.job4j.tracker.store.Store;
 import java.util.List;
 
 public class StartUI {
-
     public void init(Input input, Store tracker, List<UserAction> actions) {
         boolean run = true;
         while (run) {
@@ -30,7 +29,6 @@ public class StartUI {
             System.out.printf("%d. %s%n", i, actions.get(i).name());
         }
     }
-
 
     public static void main(String[] args) {
         Input validate = new ValidateInput(
