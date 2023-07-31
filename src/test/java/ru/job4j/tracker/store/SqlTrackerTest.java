@@ -1,9 +1,9 @@
 package ru.job4j.tracker.store;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import ru.job4j.tracker.model.Item;
 
 import java.io.InputStream;
@@ -14,16 +14,14 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SqlTrackerTest {
     private static Connection connection;
 
-    @BeforeClass
+    @BeforeAll
     public static void initConnection() {
-        try (InputStream in = SqlTrackerTest.class.getClassLoader().getResourceAsStream("test.properties")) {
+        try (InputStream in = SqlTrackerTest.class.getClassLoader().getResourceAsStream("connection.properties")) {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("driver-class-name"));
@@ -37,14 +35,14 @@ public class SqlTrackerTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void closeConnection() throws SQLException {
         if (connection != null) {
             connection.close();
         }
     }
 
-    @After
+    @AfterEach
     public void wipeTable() throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("delete from items")) {
             statement.execute();
@@ -56,7 +54,7 @@ public class SqlTrackerTest {
         SqlTracker tracker = new SqlTracker(connection);
         Item item = new Item("item");
         tracker.add(item);
-        assertThat(tracker.findById(item.getId()), is(item));
+        assertThat(tracker.findById(item.getId())).isEqualTo(item);
     }
 
     @Test
@@ -67,7 +65,7 @@ public class SqlTrackerTest {
                 new Item("Second")
         );
         items.forEach(tracker::add);
-        assertThat(tracker.findAll(), is(items));
+        assertThat(tracker.findAll()).isEqualTo(items);
     }
 
     @Test
@@ -80,7 +78,7 @@ public class SqlTrackerTest {
         );
         items.forEach(tracker::add);
         List<Item> expected = List.of(items.get(0), items.get(2));
-        assertThat(tracker.findByName("First"), is(expected));
+        assertThat(tracker.findByName("First")).isEqualTo(expected);
     }
 
     @Test
@@ -92,7 +90,7 @@ public class SqlTrackerTest {
                 new Item("First")
         );
         items.forEach(tracker::add);
-        assertThat(tracker.findById(items.get(1).getId()), is(items.get(1)));
+        assertThat(tracker.findById(items.get(1).getId())).isEqualTo(items.get(1));
     }
 
     @Test
@@ -104,7 +102,7 @@ public class SqlTrackerTest {
                 new Item("First")
         );
         items.forEach(tracker::add);
-        assertThat(tracker.findById(0), is(nullValue()));
+        assertThat(tracker.findById(0)).isNull();
     }
 
     @Test
@@ -113,7 +111,7 @@ public class SqlTrackerTest {
         Item item = new Item("First");
         tracker.add(item);
         tracker.replace(item.getId(), new Item("Second"));
-        assertThat(tracker.findById(item.getId()).getName(), is("Second"));
+        assertThat(tracker.findById(item.getId()).getName()).isEqualTo("Second");
     }
 
     @Test
@@ -122,6 +120,6 @@ public class SqlTrackerTest {
         Item item = new Item("First");
         tracker.add(item);
         tracker.delete(item.getId());
-        assertThat(tracker.findById(item.getId()), is(nullValue()));
+        assertThat(tracker.findById(item.getId())).isNull();
     }
 }

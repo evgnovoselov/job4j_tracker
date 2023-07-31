@@ -6,19 +6,19 @@ import ru.job4j.tracker.input.Input;
 import ru.job4j.tracker.input.ValidateInput;
 import ru.job4j.tracker.output.ConsoleOutput;
 import ru.job4j.tracker.output.Output;
-import ru.job4j.tracker.store.MemTracker;
 import ru.job4j.tracker.store.SqlTracker;
 import ru.job4j.tracker.store.Store;
 
 import java.util.List;
 
 public class StartUI {
+    private static int actionsCount;
 
     public void init(Input input, Store tracker, List<UserAction> actions) {
         boolean run = true;
         while (run) {
             showMenu(actions);
-            int select = input.askInt("Enter select: ");
+            int select = input.askInt("Enter select: ", actionsCount);
             UserAction action = actions.get(select);
             run = action.execute(input, tracker);
         }
@@ -30,7 +30,6 @@ public class StartUI {
             System.out.printf("%d. %s%n", i, actions.get(i).name());
         }
     }
-
 
     public static void main(String[] args) {
         Input validate = new ValidateInput(
@@ -48,6 +47,7 @@ public class StartUI {
                     new FindByNameAction(output),
                     new ExitAction()
             );
+            actionsCount = actions.size();
             new StartUI().init(validate, tracker, actions);
         } catch (Exception e) {
             e.printStackTrace();

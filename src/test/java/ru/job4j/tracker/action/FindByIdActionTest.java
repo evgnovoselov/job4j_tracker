@@ -1,6 +1,6 @@
 package ru.job4j.tracker.action;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.job4j.tracker.input.Input;
 import ru.job4j.tracker.model.Item;
 import ru.job4j.tracker.output.Output;
@@ -8,7 +8,7 @@ import ru.job4j.tracker.output.StubOutput;
 import ru.job4j.tracker.store.MemTracker;
 import ru.job4j.tracker.store.Store;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class FindByIdActionTest {
@@ -23,7 +23,7 @@ public class FindByIdActionTest {
         when(input.askInt(any(String.class))).thenReturn(item.getId());
         findByIdAction.execute(input, tracker);
         String ln = System.lineSeparator();
-        assertEquals("=== Find item by Id ===" + ln + item + ln, output.toString());
+        assertThat(output.toString()).isEqualTo("=== Find item by Id ===" + ln + item + ln);
     }
 
     @Test
@@ -35,6 +35,6 @@ public class FindByIdActionTest {
         Input input = mock(Input.class);
         findByIdAction.execute(input, tracker);
         String ln = System.lineSeparator();
-        assertEquals("=== Find item by Id ===" + ln + "Wrong id! Not found" + ln, output.toString());
+        assertThat(output.toString()).isEqualTo("=== Find item by Id ===" + ln + "Wrong id! Not found" + ln);
     }
 }
