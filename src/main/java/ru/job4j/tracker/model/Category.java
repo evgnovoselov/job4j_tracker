@@ -2,10 +2,9 @@ package ru.job4j.tracker.model;
 
 import lombok.*;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Category {
-    @NonNull
     @Getter
     @EqualsAndHashCode.Include
     private int id;
